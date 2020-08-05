@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.fjx.gmall.manage.mapper.PmsProductSaleAttrMapper">
+    <select id="spuSaleAttrListCheckBySku" resultMap="spuSaleAttrListCheckBySkuMap">
+        select sa.id as sa_id,sav.id as sav_id,sa.*, sav.*, if(ksav.id, 1, 0) isChecked
+        from pms_product_sale_attr sa
+        inner join pms_product_sale_attr_value sav
+        on sa.product_id = sav.product_id and sa.sale_attr_id = sav.sale_attr_id and sa.product_id = #{productId}
+        left join pms_sku_sale_attr_value ksav on ksav.sale_attr_value_id = sav.id and ksav.sku_id = #{skuId}
+    </select>
+    <resultMap id="spuSaleAttrListCheckBySkuMap" type="com.fjx.gmall.bean.PmsProductSaleAttr" autoMapping="true">
+        <result property="id" column="sa_id"/>
+        <collection property="pmsProductSaleAttrValueList" ofType="com.fjx.gmall.bean.PmsProductSaleAttrValue" autoMapping="true">
+            <result column="sav_id" property="id"/>
+        </collection>
+    </resultMap>
+</mapper>
