@@ -12,7 +12,7 @@
 	<body>
 		<div id="max">
 		<header>
-
+			<input type="text" th:value="${skuSaleAttrJsonString}" id="valuesSku" hidden="hidden">
 					<div class="min">
 						<ul class="header_ul_left">
 							<li class="glyphicon glyphicon-home"> <a href="shouye.html" class="aa">首页</a></li>
@@ -261,8 +261,8 @@
 
 						<div class="box-btns clear">
 							<div class="box-btns-one">
-								<form id="itemForm" action="http://cart.gmall.com:8087/addToCart" method="post">
-									<input type="text" name="num" id=""  value="1"/>
+								<form id="itemForm" action="http://localhost:8084/addToCart" method="post">
+									<input type="text" name="quantity" id=""  value="1"/>
 									<input type="hidden" name="skuId"  th:value="${skuInfo?.id}" />
 
 									<div class="box-btns-one1">
@@ -1020,7 +1020,19 @@
         }
 
         function switchSkuId() {
-            // 被选中属性
+            let jsonStr = $("#valuesSku").val();
+            // redborder
+			var k = "";
+			let attrdivs = $(".redborder div");
+			$(attrdivs).each(function (i,e) {
+			    k+=$(e).attr("value")+"|"
+            })
+			let skuJson = JSON.parse(jsonStr);
+			let id = skuJson[k];
+			if(id) {
+                window.location.href = "http://127.0.0.1:8082/" + id + ".html";
+            }
+           /* // 被选中属性
             var checkDivs = $(".redborder div");
             var valueIds="";
             // 拼接成属性值串
@@ -1049,7 +1061,7 @@
                 }
             }else{
                 $("#cartBtn").attr("class","box-btns-two-off");
-            }
+            }*/
         }
 	</script>
 

@@ -34,6 +34,7 @@
         <commons-lang3.version>3.7</commons-lang3.version>
         <mapper-starter.version>1.2.3</mapper-starter.version>
         <jedis.version>2.9.0</jedis.version>
+        <redis.version>1.5.21.RELEASE</redis.version>
         <jest.version>5.3.3</jest.version>
         <jna.version>4.5.1</jna.version>
         <beanUtils.version>1.9.3</beanUtils.version>
@@ -98,6 +99,11 @@
                 <version>${mybatis.version}</version>
             </dependency>
 
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-data-redis</artifactId>
+                <version>${redis.version}</version>
+            </dependency>
 
             <dependency>
                 <groupId>net.sourceforge.nekohtml</groupId>

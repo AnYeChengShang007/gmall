@@ -15,6 +15,13 @@
     </parent>
 
     <dependencies>
+        <!-- https://mvnrepository.com/artifact/org.redisson/redisson -->
+        <dependency>
+            <groupId>org.redisson</groupId>
+            <artifactId>redisson</artifactId>
+            <version>3.10.5</version>
+        </dependency>
+
         <dependency>
             <groupId>com.fjx.gmall</groupId>
             <artifactId>gmall-common-util</artifactId>
@@ -37,6 +44,10 @@
         <dependency>
             <groupId>redis.clients</groupId>
             <artifactId>jedis</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-redis</artifactId>
         </dependency>
     </dependencies>
 

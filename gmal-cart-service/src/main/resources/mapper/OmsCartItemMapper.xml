@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fjx.gmall.cart.mapper.OmsCartItemMapper">
+    <insert id="insertCartItem" parameterType="com.fjx.gmall.bean.OmsCartItem">
+        INSERT INTO oms_cart_item ( id,product_id,product_sku_id,member_id,quantity,price,sp1,sp2,sp3,product_pic,product_name,product_sub_title,product_sku_code,member_nickname,create_date,modify_date,product_category_id,product_brand,product_sn,product_attr )
+        VALUES( #{id},#{productId},#{productSkuId},#{memberId},#{quantity},#{price},#{sp1},#{sp2},#{sp3},#{productPic},#{productName},#{productSubTitle},#{productSkuCode},#{memberNickname},#{createDate},#{modifyDate},#{productCategoryId},#{productBrand},#{productSn},#{productAttr} )
+    </insert>
+
+    <select id="cartExistByUser" resultType="com.fjx.gmall.bean.OmsCartItem">
+        SELECT id,product_id,product_sku_id,member_id,price,sp1,sp2,sp3,product_pic,product_name,product_sub_title,product_sku_code,member_nickname,create_date,modify_date,product_category_id,product_brand,product_sn,product_attr
+        FROM oms_cart_item WHERE
+        product_sku_id = #{skuId} AND member_id = #{memberId}
+    </select>
+
+    <update id="updateCart" parameterType="com.fjx.gmall.bean.OmsCartItem">
+        UPDATE oms_cart_item
+        SET product_id = #{productId},product_sku_id = #{productSkuId},member_id = #{memberId},quantity=#{quantity},price = #{price},product_pic = #{productPic},product_name = #{productName},product_sku_code = #{productSkuCode},create_date = #{createDate},modify_date = #{modifyDate},product_category_id = #{productCategoryId},product_brand = #{productBrand},product_attr = #{productAttr}
+        WHERE ( id = #{id} )
+    </update>
+</mapper>

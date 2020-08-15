@@ -39,8 +39,9 @@ public class PmsSkuAttrValue implements Serializable {
         return valueId;
     }
 
-    public void setValueId(String valueId) {
+    public PmsSkuAttrValue setValueId(String valueId) {
         this.valueId = valueId;
+        return this;
     }
 
     public String getSkuId() {
