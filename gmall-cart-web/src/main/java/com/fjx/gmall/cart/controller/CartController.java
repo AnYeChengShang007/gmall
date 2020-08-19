@@ -1,6 +1,7 @@
 package com.fjx.gmall.cart.controller;
 import com.alibaba.dubbo.config.annotation.Reference;
 import com.alibaba.fastjson.JSON;
+import com.fjx.gmall.annotatioins.LoginRequired;
 import com.fjx.gmall.bean.OmsCartItem;
 import com.fjx.gmall.bean.PmsSkuInfo;
 import com.fjx.gmall.service.CartService;
@@ -30,12 +31,39 @@ public class CartController {
     @Reference
     CartService cartService;
 
+    //必须登录才能通过
+    @LoginRequired(loginSuccess = true)
+    @RequestMapping("toTrade")
+    public String toTrade(HttpServletRequest request, HttpServletResponse response, HttpSession session, ModelMap modelMap){
+        //这边认证拦截器会拦截
+        Object mId = request.getAttribute("memberId");
+        Object name = request.getAttribute("nickName");
+        String memberId = null;
+        String nickName = null;
+        if(mId!=null){
+            memberId = (String)mId;
+        }
+        if(name!=null){
+            nickName = (String)name;
+        }
+        return "toTrade";
+    }
 
 //    checkCart
 
     @RequestMapping("checkCart")
+    @LoginRequired(loginSuccess = false)
     public String checkCart(String isChecked, String skuId, HttpServletRequest request, HttpServletResponse response, HttpSession session, ModelMap modelMap){
-        String memberId = "1";
+        Object mId = request.getAttribute("memberId");
+        Object name = request.getAttribute("nickName");
+        String memberId = null;
+        String nickName = null;
+        if(mId!=null){
+            memberId = (String)mId;
+        }
+        if(name!=null){
+            nickName = (String)name;
+        }
         if(StringUtils.isNotBlank(memberId)){
             // 调用服务，修改状态
             OmsCartItem omsCartItem = new OmsCartItem();
@@ -63,6 +91,7 @@ public class CartController {
     }
 
     @RequestMapping("cartList")
+    @LoginRequired(loginSuccess = false)
     public String cartList(ModelMap modelMap,HttpServletRequest request, HttpServletResponse response){
 
         List<OmsCartItem> omsCartItems = new ArrayList<>();
@@ -97,6 +126,7 @@ public class CartController {
 
 
     @RequestMapping("addToCart")
+    @LoginRequired(loginSuccess = false)
     public String addToCart(String skuId, Integer quantity, HttpServletRequest request, HttpServletResponse response){
 
         List<OmsCartItem> cartItems = new ArrayList<>();
@@ -121,7 +151,16 @@ public class CartController {
 
 
         //判断用户是否登录
-        String memberId = "1";
+        Object mId = request.getAttribute("memberId");
+        Object name = request.getAttribute("nickName");
+        String memberId = null;
+        String nickName = null;
+        if(mId!=null){
+            memberId = (String)mId;
+        }
+        if(name!=null){
+            nickName = (String)name;
+        }
         //根据用户登录决定揍cookie的分支还是db
         if(StringUtils.isNotBlank(memberId)){
             //用户已经登录
