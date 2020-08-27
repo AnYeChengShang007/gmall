@@ -31,23 +31,7 @@ public class CartController {
     @Reference
     CartService cartService;
 
-    //必须登录才能通过
-    @LoginRequired(loginSuccess = true)
-    @RequestMapping("toTrade")
-    public String toTrade(HttpServletRequest request, HttpServletResponse response, HttpSession session, ModelMap modelMap){
-        //这边认证拦截器会拦截
-        Object mId = request.getAttribute("memberId");
-        Object name = request.getAttribute("nickName");
-        String memberId = null;
-        String nickName = null;
-        if(mId!=null){
-            memberId = (String)mId;
-        }
-        if(name!=null){
-            nickName = (String)name;
-        }
-        return "toTrade";
-    }
+
 
 //    checkCart
 
@@ -96,7 +80,7 @@ public class CartController {
 
         List<OmsCartItem> omsCartItems = new ArrayList<>();
 
-        String memberId = "1";
+        String memberId = (String) request.getAttribute("memberId");
         if(StringUtils.isNotBlank(memberId)){
             //已经登录查询db
             omsCartItems = cartService.cartList(memberId);

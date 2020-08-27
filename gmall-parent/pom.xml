@@ -43,6 +43,7 @@
         <dubbo.version>2.6.0</dubbo.version>
         <zkclient.version>0.10</zkclient.version>
         <lombok.version>1.18.12</lombok.version>
+
     </properties>
 
     <dependencyManagement>
@@ -181,6 +182,8 @@
                 <artifactId>mysql-connector-java</artifactId>
                 <version>${mysql.version}</version>
             </dependency>
+
+
 
         </dependencies>
     </dependencyManagement>

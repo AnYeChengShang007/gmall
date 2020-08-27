@@ -19,6 +19,7 @@ import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import redis.clients.jedis.Jedis;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
@@ -163,5 +164,18 @@ public class PmsSkuInfoServiceImpl implements PmsSkuInfoService {
             }
         }
         return pmsSkuInfos;
+    }
+
+    @Override
+    public boolean checkPrice(String skuId, BigDecimal price) {
+        boolean success = false;
+        PmsSkuInfo skuInfo = new PmsSkuInfo();
+        skuInfo.setPrice(price);
+        skuInfo.setId(skuId);
+        PmsSkuInfo res = pmsSkuInfoMapper.selectOne(skuInfo);
+        if(res!=null){
+            success = true;
+        }
+        return success;
     }
 }

@@ -3,8 +3,8 @@ package com.fjx.gmall.interceptor;
 import com.alibaba.fastjson.JSON;
 import com.fjx.gmall.annotatioins.LoginRequired;
 import com.fjx.gmall.util.CookieUtil;
+import com.fjx.gmall.util.IPUtil;
 import com.fjx.gmall.utils.HttpclientUtil;
-import com.sun.corba.se.impl.oa.toa.TOA;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
@@ -29,7 +29,7 @@ public class AuthInterceptor extends HandlerInterceptorAdapter {
         } else {
             //进行拦截
             String token = "";
-            String oldToken = CookieUtil.getCookieValue(request, "token", true);
+            String oldToken = CookieUtil.getCookieValue(request, "oldToken", true);
             if (StringUtils.isNotBlank(oldToken)) {
                 token = oldToken;
             }
@@ -41,15 +41,7 @@ public class AuthInterceptor extends HandlerInterceptorAdapter {
             String success = "fail";
             if(StringUtils.isNotBlank(token)){
                 //调用验证中心进行验证
-                String ip = request.getHeader("X-Forwarded-For");
-                if(StringUtils.isBlank(ip)){
-                    //不是nginx代理，从request获取ip
-                    ip = request.getRemoteAddr();
-                }
-                if(StringUtils.isBlank(ip)){
-                    //非法请求
-                    throw new RuntimeException("非法请求，获取不到ip");
-                }
+                String ip = IPUtil.getIp(request);
                 String successJson = HttpclientUtil.doGet("http://localhost:8085/verify?token=" + token+"&currentIp="+ip);
                 map = JSON.parseObject(successJson, Map.class);
                 success = map.get("status");

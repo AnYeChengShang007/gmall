@@ -12,6 +12,7 @@ import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import redis.clients.jedis.Jedis;
+import tk.mybatis.mapper.entity.Example;
 
 import java.util.List;
 
@@ -52,12 +53,16 @@ public class UserServiceImpl implements UserService {
         try {
             jedis = redisUtil.getJedis();
             if (jedis != null) {
-                String password = jedis.get("user:" + umsMember.getUsername() + ":password");
+                String userStr = jedis.get("user:" + umsMember.getUsername()+umsMember.getPassword() + ":password");
+                UmsMember memberCheck = JSON.parseObject(userStr, UmsMember.class);
+                String password = null;
+                if (memberCheck != null) {
+                    password = memberCheck.getPassword();
+                }
+
                 if (password != null && password.equals(umsMember.getPassword())) {
                     //密码正确
-                    String memberStr = jedis.get("user:" + umsMember.getUsername() + ":info");
-                    UmsMember memberInCache = JSON.parseObject(memberStr, UmsMember.class);
-                    return memberInCache;
+                    return memberCheck;
                 }
 
             }
@@ -73,12 +78,12 @@ public class UserServiceImpl implements UserService {
             try {
                 UmsMember memberInDB = loginFromDB(umsMember);
                 if (memberInDB != null) {
-                    jedis.setex("user:" + umsMember.getUsername() + ":password",
+                    jedis.setex("user:" + umsMember.getUsername()+umsMember.getPassword() + ":password",
                             60 * 60 * 24,
                             JSON.toJSONString(memberInDB));
                     return memberInDB;
                 }
-            }finally {
+            } finally {
                 lock.unlock();
             }
 
@@ -96,14 +101,35 @@ public class UserServiceImpl implements UserService {
     @Override
     public void addUserToken(String token, String memberId) {
         Jedis jedis = redisUtil.getJedis();
-        jedis.setex("user:"+memberId+":token",60*60*24,token);
+        jedis.setex("user:" + memberId + ":token", 60 * 60 * 24, token);
         jedis.close();
+    }
+
+    @Override
+    public UmsMember addOAuthUser(UmsMember umsMember) {
+        userMapper.insertSelective(umsMember);
+        return umsMember;
+    }
+
+    @Override
+    public UmsMember checkAuthUser(UmsMember user) {
+        Example example = new Example(UmsMember.class);
+        example.createCriteria().andEqualTo("sourceUid", user.getSourceUid());
+        UmsMember umsMember = userMapper.selectOneByExample(example);
+        return umsMember;
+    }
+
+    @Override
+    public UmsMemberReceiveAddress getReceiveAddressById(String receieveAddressId) {
+        UmsMemberReceiveAddress condition = new UmsMemberReceiveAddress();
+        condition.setId(receieveAddressId);
+        return umsMemberReceiveAddressMapper.selectOne(condition);
     }
 
     private UmsMember loginFromDB(UmsMember umsMember) {
 
         List<UmsMember> res = userMapper.select(umsMember);
-        if(res!=null && res.size()==1){
+        if (res != null && res.size() == 1) {
             return res.get(0);
         }
 

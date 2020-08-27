@@ -70,9 +70,15 @@ public class CartServiceImpl implements CartService {
         List<OmsCartItem> omsCartItems = new ArrayList<>();
         Jedis jedis = redisUtil.getJedis();
         List<String> list = jedis.hvals("user:" + memberId + ":cart");
-        for (String s : list) {
-            OmsCartItem cartItem = JSON.parseObject(s, OmsCartItem.class);
-            omsCartItems.add(cartItem);
+        if(list!=null&&list.size()>0){
+            for (String s : list) {
+                OmsCartItem cartItem = JSON.parseObject(s, OmsCartItem.class);
+                omsCartItems.add(cartItem);
+            }
+        }else{
+            Example example = new Example(OmsCartItem.class);
+            example.createCriteria().andEqualTo("memberId",memberId);
+            omsCartItems = omsCartItemMapper.selectByExample(example);
         }
         return omsCartItems;
     }

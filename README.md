@@ -18,6 +18,12 @@ gmall-cart-servie 购物车service 8075
 
 gmall-cart-web  购物车web  8084
 
-gmall-passport-web 用户认证中心
+gmall-passport-web 用户认证中心8085
 
-gmall-passport-service用户认证中心service层8070
+gmall-passport-service用户认证中心service层8076
+
+gmall-order-web 订单8086
+
+gmall-order-service 订单 8077
+
+gmall-payment 支付系统 8087
