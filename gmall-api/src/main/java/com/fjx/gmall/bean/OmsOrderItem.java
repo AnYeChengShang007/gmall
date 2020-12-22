@@ -51,8 +51,9 @@ public class OmsOrderItem implements Serializable {
         return orderSn;
     }
 
-    public void setOrderSn(String orderSn) {
+    public OmsOrderItem setOrderSn(String orderSn) {
         this.orderSn = orderSn;
+        return this;
     }
 
     public String getProductId() {

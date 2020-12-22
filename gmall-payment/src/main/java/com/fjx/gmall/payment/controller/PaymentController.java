@@ -65,6 +65,9 @@ public class PaymentController {
             paymentInfo.setTotalAmount(totalAmount);
             paymentService.savePaymentInfo(paymentInfo);
 
+            // 向消息中间件发送一个检查支付状态(支付服务消费)的延迟消息队列
+            paymentService.sendDelayPaymentResultCheckQueue(outTradeNo,5);
+
         } catch (AlipayApiException e) {
             e.printStackTrace();
         }
@@ -97,9 +100,7 @@ public class PaymentController {
             paymentInfo.setCallbackTime(new Date());
             // 更新用户的支付状态
             paymentService.updatePayment(paymentInfo);
-
             //支付成功后，引起的系统服务-》订单服务更新-》库存服务-》物流
-
         }
 
 

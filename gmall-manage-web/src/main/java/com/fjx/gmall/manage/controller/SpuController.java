@@ -5,7 +5,6 @@ import com.fjx.gmall.bean.*;
 import com.fjx.gmall.manage.config.FTPConfig;
 import com.fjx.gmall.manage.utils.FtpUtil;
 import com.fjx.gmall.service.SpuService;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -17,7 +16,6 @@ import java.util.*;
 
 @Controller
 @CrossOrigin
-@Slf4j
 public class SpuController {
 
     static SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd");
@@ -61,7 +59,6 @@ public class SpuController {
             }
         } catch (IOException e) {
             e.printStackTrace();
-            log.error("上传文件错误");
         }
         return url;
     }

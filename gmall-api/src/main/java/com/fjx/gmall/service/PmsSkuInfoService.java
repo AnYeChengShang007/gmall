@@ -4,6 +4,7 @@ import com.fjx.gmall.bean.PmsSkuInfo;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 
 public interface PmsSkuInfoService {
 
@@ -16,4 +17,6 @@ public interface PmsSkuInfoService {
     List<PmsSkuInfo> getAllPmsSkuInfos();
 
     boolean checkPrice(String productSkuId, BigDecimal price);
+
+    String getSkuSaleAttrHash(List<PmsSkuInfo> pmsSkuInfos);
 }

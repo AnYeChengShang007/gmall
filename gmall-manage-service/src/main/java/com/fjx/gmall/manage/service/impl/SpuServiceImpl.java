@@ -51,16 +51,15 @@ public class SpuServiceImpl implements SpuService {
         String id = pmsProductInfo.getId();
 
 //        保存商品销售属性
-        List<PmsProductSaleAttr> pmsProductSaleAttrList =
+        List<PmsProductSaleAttr> productSaleAttrList =
                 pmsProductInfo.getPmsProductSaleAttrList();
-        for (PmsProductSaleAttr pmsProductSaleAttr : pmsProductSaleAttrList) {
-            pmsProductSaleAttr.setProductId(id);
-            pmsProductSaleAttrMapper.insert(pmsProductSaleAttr);
-
+        for (PmsProductSaleAttr productSaleAttr : productSaleAttrList) {
+            productSaleAttr.setProductId(id);
+            pmsProductSaleAttrMapper.insert(productSaleAttr);
 //            保存商品销售属性值
-            List<PmsProductSaleAttrValue> pmsProductSaleAttrValueList =
-                    pmsProductSaleAttr.getPmsProductSaleAttrValueList();
-            for (PmsProductSaleAttrValue pmsProductSaleAttrValue : pmsProductSaleAttrValueList) {
+            List<PmsProductSaleAttrValue> productSaleAttrValueList =
+                    productSaleAttr.getPmsProductSaleAttrValueList();
+            for (PmsProductSaleAttrValue pmsProductSaleAttrValue : productSaleAttrValueList) {
                 pmsProductSaleAttrValue.setProductId(id);
                 pmsProductSaleAttrValueMapper.insert(pmsProductSaleAttrValue);
             }
@@ -68,10 +67,10 @@ public class SpuServiceImpl implements SpuService {
 
 
 //        保存商品图片
-        List<PmsProductImage> pmsProductImageList = pmsProductInfo.getPmsProductImageList();
-        for (PmsProductImage pmsProductImage : pmsProductImageList) {
-            pmsProductImage.setProductId(id);
-            pmsProductImageMapper.insert(pmsProductImage);
+        List<PmsProductImage> productImageList = pmsProductInfo.getPmsProductImageList();
+        for (PmsProductImage productImage : productImageList) {
+            productImage.setProductId(id);
+            pmsProductImageMapper.insert(productImage);
         }
 
     }
@@ -80,12 +79,14 @@ public class SpuServiceImpl implements SpuService {
     public List<PmsProductSaleAttr> spuSaleAttrList(String spuId) {
         PmsProductSaleAttr pmsProductSaleAttr = new PmsProductSaleAttr();
         pmsProductSaleAttr.setProductId(spuId);
+        //获得商品销售属性列表
         List<PmsProductSaleAttr> pmsProductSaleAttrList =
                 pmsProductSaleAttrMapper.select(pmsProductSaleAttr);
         for (PmsProductSaleAttr productSaleAttr : pmsProductSaleAttrList) {
             PmsProductSaleAttrValue pmsProductSaleAttrValue = new PmsProductSaleAttrValue();
             pmsProductSaleAttrValue.setProductId(spuId);
             pmsProductSaleAttrValue.setSaleAttrId(productSaleAttr.getSaleAttrId());
+            //获得商品销售属性值列表
             List<PmsProductSaleAttrValue> pmsProductSaleAttrValueList =
                     pmsProductSaleAttrValueMapper.select(pmsProductSaleAttrValue);
             productSaleAttr.setPmsProductSaleAttrValueList(pmsProductSaleAttrValueList);
@@ -102,8 +103,8 @@ public class SpuServiceImpl implements SpuService {
     }
 
     @Override
-    public List<PmsProductSaleAttr> spuSaleAttrListCheckBySku(String productId,String skuId) {
-        List<PmsProductSaleAttr> pmsProductSaleAttrList = pmsProductSaleAttrMapper.spuSaleAttrListCheckBySku(productId,skuId);
+    public List<PmsProductSaleAttr> spuSaleAttrListCheckBySku(String productId, String skuId) {
+        List<PmsProductSaleAttr> pmsProductSaleAttrList = pmsProductSaleAttrMapper.spuSaleAttrListCheckBySku(productId, skuId);
         return pmsProductSaleAttrList;
     }
 

@@ -12,4 +12,6 @@ public interface OrderService {
     void saveOrder(OmsOrder order);
 
     OmsOrder getOrderByOutTradeNo(String outTradeNo);
+
+    void updateOrder(OmsOrder omsOrder);
 }

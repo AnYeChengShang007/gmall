@@ -27,3 +27,5 @@ gmall-order-web 订单8086
 gmall-order-service 订单 8077
 
 gmall-payment 支付系统 8087
+
+gmall-flashsale 秒杀 8001********

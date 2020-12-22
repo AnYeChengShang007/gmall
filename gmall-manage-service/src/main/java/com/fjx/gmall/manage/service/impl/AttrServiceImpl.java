@@ -67,6 +67,9 @@ public class AttrServiceImpl implements AttrService {
             pmsBaseAttrValueDel.setAttrId(id);
             pmsBaseAttrValueMapper.delete(pmsBaseAttrValueDel);
             for (PmsBaseAttrValue pmsBaseAttrValue : attrValueList) {
+                if(StringUtils.isBlank(pmsBaseAttrValue.getAttrId())){
+                    pmsBaseAttrValue.setAttrId(id);
+                }
                 pmsBaseAttrValueMapper.insertSelective(pmsBaseAttrValue);
             }
 

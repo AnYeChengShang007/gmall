@@ -20,21 +20,16 @@ import java.util.Map;
 public class ItemController {
 
     @Reference
-    PmsSkuInfoService pmsSkuInfoService;
+    PmsSkuInfoService skuService;
 
     @Reference
     SpuService spuService;
-
-    @RequestMapping("index")
-    public String index(){
-        return "index";
-    }
 
 //    spuSaleAttrListCheckBySku
     @RequestMapping("{skuId}.html")
     public String item(@PathVariable String skuId, ModelMap modelMap){
         //通过skuid获取skuinfo
-        PmsSkuInfo pmsSkuInfo = pmsSkuInfoService.getSkuById(skuId);
+        PmsSkuInfo pmsSkuInfo = skuService.getSkuById(skuId);
         List<PmsProductSaleAttr> pmsProductSaleAttrList = null;
         if(pmsSkuInfo!=null) {
             //获取商品销售属性列表
@@ -43,19 +38,9 @@ public class ItemController {
         String skuSaleAttrJsonString = null;
         if(pmsSkuInfo!=null){
             //获取skuid对应商品的兄弟sku信息
-            List<PmsSkuInfo> pmsSkuInfos = pmsSkuInfoService.getSkuSaleAttrValueListBySpu(pmsSkuInfo.getProductId());
+            List<PmsSkuInfo> pmsSkuInfos = skuService.getSkuSaleAttrValueListBySpu(pmsSkuInfo.getProductId());
             //将兄弟sku的销售属性做为k，skuid做为v存入map中
-            Map<String,String> skuSaleAttrHash = new HashMap<>();
-            for (PmsSkuInfo skuInfo : pmsSkuInfos) {
-                String v = skuInfo.getId();
-                String k = "";
-                List<PmsSkuSaleAttrValue> skuSaleAttrValueList = skuInfo.getSkuSaleAttrValueList();
-                for (PmsSkuSaleAttrValue pmsSkuSaleAttrValue : skuSaleAttrValueList) {
-                    k+=pmsSkuSaleAttrValue.getSaleAttrValueId()+"|";
-                }
-                skuSaleAttrHash.put(k,v);
-            }
-            skuSaleAttrJsonString = JSON.toJSONString(skuSaleAttrHash);
+            skuSaleAttrJsonString = skuService.getSkuSaleAttrHash(pmsSkuInfos);
         }
 
         modelMap.put("skuInfo",pmsSkuInfo);

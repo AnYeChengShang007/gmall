@@ -3,7 +3,6 @@ package com.fjx.gmall.manage;
 import com.fjx.gmall.util.RedisUtil;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.redisson.Redisson;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;

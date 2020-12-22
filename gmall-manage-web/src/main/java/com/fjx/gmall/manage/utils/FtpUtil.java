@@ -14,7 +14,7 @@ import java.io.*;
  * <p>Company: www.itcast.com</p>
  *
  * @version 1.0
- * @author 入云龙
+ * @author 冯金星
  * @date 2015年7月29日下午8:11:51
  */
 public class FtpUtil {
