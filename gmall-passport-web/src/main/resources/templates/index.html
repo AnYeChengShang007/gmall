@@ -10,22 +10,19 @@
 <!--顶部logo-->
 
 <header>
-    <a href="http://www.baidu.com"><img src="/img/logo1.jpg"/></a>
-    <p>欢迎登录</p>
-
+    <div style="font-size: xx-large;margin-left: 300px;font-weight: bolder">欢迎登录</div>
 </header>
 <input hidden="hidden" type="text" th:value="${returnUrl}" id="returnUrl">
 <div class="top-2">
     <div class="top-2a">
-
-        <p></p>
+        <p>依据《网络安全法》，为保障您的账户安全和正常使用，请尽快完成手机号验证！将更有利于保护您的个人隐私。</p>
     </div>
 </div>
 
 <!--大图-->
 <div class="top-3">
     <div class="img_1">
-        <img src="/img/5731485aN1134b4f0.jpg"/>
+        <img src="/img/login_background.png"/>
     </div>
     <div id="sign">
 
@@ -95,13 +92,13 @@
         var username = $("#username").val();
         var password = $("#password").val();
         $.post("login",
-            {username: username, password:password},
+            {username: username, password: password},
             function (token) {
                 //passport验证token是否为空或者异常
-                if(token=="fail"){
+                if (token == "fail") {
                     alert("用户名或者密码错误");
-                }else{
-                    window.location.href =$("#returnUrl").val()+"?token="+token;
+                } else {
+                    window.location.href = $("#returnUrl").val() + "?token=" + token;
                 }
             })
     }

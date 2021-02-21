@@ -9,7 +9,7 @@
 <body>
 <div class="One_Jdbox">
     <div class="Jdbox_head">
-        <img src="img\logo1.jpg" alt="">
+<!--        <img src="img\logo1.jpg" alt="">-->
         <ul>
             <li><span th:text="'你好,'+ ${nickName}"></span><span>退出</span></li>
             <li>我的订单</li>
@@ -37,7 +37,7 @@
             <ul>
                 <li>
               <span>
-                <input name="pay" type="radio" value="alipay"/>
+                <input name="pay" type="radio" value="alipay" checked/>
                 <img src="img\alipay.jpg" alt="">支付宝
               </span>
                 </li>
@@ -75,8 +75,6 @@
         $("#paymentButton").click(function () {
             $("#paymentForm").attr("action", "/" + $("input[type='radio']:checked").val() + "/submit");
             $("#paymentForm").submit();
-            console.log($("#paymentForm").html());
-            console.log($("#paymentForm").attr("action"));
         })
 
 

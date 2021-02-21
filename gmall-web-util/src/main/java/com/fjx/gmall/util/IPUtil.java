@@ -17,6 +17,7 @@ public class IPUtil {
             //非法请求
             throw new RuntimeException("非法请求，获取不到ip");
         }
+        //return ip;
         return "localhost";
     }
 }

@@ -8,7 +8,7 @@ public interface OmsCartItemMapper extends Mapper<OmsCartItem> {
 
     int insertCartItem(OmsCartItem omsCartItem);
 
-    OmsCartItem cartExistByUser(@Param("memberId") String memberId,@Param("skuId") String skuId);
+    OmsCartItem findCarItemByUser(@Param("memberId") String memberId,@Param("skuId") String skuId);
 
     int updateCart(OmsCartItem omsCartItem);
 

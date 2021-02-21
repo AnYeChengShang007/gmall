@@ -5,7 +5,6 @@
     <meta charset="utf-8"/>
     <script src="js/jquery-3.1.1.min.js"></script>
     <link rel="stylesheet" type="text/css" href="css/JD2.css"/>
-
     <title></title>
 </head>
 
@@ -16,7 +15,7 @@
         <ul class="header-left">
             <li>
                 <img src="img/header_1.png"/>
-                <a href="">首页</a>
+                <a href="http://localhost:8083/index">首页</a>
             </li>
             <li class="header-l-2">
                 <i class="fa fa-map-marker" style="color: #5C5452;"></i>
@@ -27,7 +26,10 @@
         </ul>
         <ul class="header-right">
             <li th:text="'你好，'+${nickName}"></li>
-            <li>|</li>
+            <li class="spacer"></li>
+            <li style="cursor: pointer" th:if="${#httpServletRequest.getAttribute('nickName')!=null}"
+                onclick="logOut()">登出
+            </li>
             <li class="spacer"></li>
             <li><a href="">我的订单</a></li>
             <li class="spacer"></li>
@@ -41,14 +43,15 @@
 
 <!--logo图片-->
 <div class="top-1">
-    <img src="img/logo1.jpg" class="img1"/><span>结算页</span>
+    <span>结算页</span>
     <!--右侧绿色-->
     <img src="img/08.png" class="img2"/>
 </div>
 
 <!--主体部分-->
-<p class="p1">填写并核对订单信息</p>
+
 <div class="section">
+    <p class="p1">填写并核对订单信息</p>
     <!--收货人信息-->
     <div class="top-2">
         <span>收货人信息</span>
@@ -61,9 +64,14 @@
         <ul>
             <li class=".address default selected" th:each="userAddress:${userAddressList}">
                 <input onclick="changeAddress()" name="deliveryAddress" type="radio" th:value="${userAddress.id}"
-                       th:checked="${userAddress.defaultStatus}=='1'">
-                <span th:text="${userAddress.name}">收件人AAAA </span><span
-                    th:text="${userAddress.detailAddress}">具体地址111 </span>
+                       style="cursor: pointer"
+                       th:checked="${userAddress.defaultStatus==1}">
+                <span th:text="${userAddress.name}">收件人AAAA </span>
+                <span th:text="${userAddress.province}">收件人AAAA </span>
+                <span th:text="${userAddress.city}">收件人AAAA </span>
+                <span th:text="${userAddress.region}">收件人AAAA </span>
+                <span th:text="${userAddress.detailAddress}">具体地址111 </span>
+                <span th:text="${#strings.substring(userAddress.phoneNumber,0,3)+'*****'+#strings.substring(userAddress.phoneNumber,7,11)}">具体地址111 </span>
             </li>
         </ul>
     </div>
@@ -105,7 +113,7 @@
 <div class="bto">
     <div class="hh2"></div>
     <h4 class="float">添加订单备注
-        <input id="orderCommentPage" type="text" maxlength="145" size="75" style="height: 22px"
+        <input id="orderCommentPage" type="text" maxlength="145" size="75" style="height: 22px" onblur="addNote()"
                placeholder="请将购买需求在备注中说明"/>
     </h4>
     <br/>
@@ -113,34 +121,36 @@
 
 </div>
 <div class="xia">
-
-
     <div class="yfze">
         <p class="yfze_a"><span class="z">应付总额：</span><span class="hq" th:text="'￥'+${allPrice}"> ￥99999</span></p>
-
-
         <button id="submitButton" class="tijiao">提交订单</button>
     </div>
 </div>
 
 <form action="./submitOrder" method="post" id="orderForm">
+    <input name="note" id="orderNote" type="hidden"/>
     <input name="receieveAddressId" id="receieveAddressId" type="hidden"/>
-    <input name="allPrice" id="allPrice" type="hidden" th:value="${allPrice}"/>
     <input name="tradeCode" type="hidden" th:value="${tradeCode}"/>
 </form>
 <script>
+
+    function addNote() {
+        var note = $("#orderCommentPage").val();
+        $("#orderNote").val(note);
+    }
+
 
     function changeAddress() {
         var addressId = $("input[name='deliveryAddress']:checked").val();
         $("#receieveAddressId").val(addressId);
     }
 
+    changeAddress();
+
     $(function () {
 
         $("#submitButton").click(function () {
-
             $("#orderForm").submit();
-
         });
 
 
@@ -171,6 +181,17 @@
         })
     })
 
+    function logOut() {
+        $.ajax({
+            url: "http://localhost:8085/logout",
+            xhrFields: {
+                withCredentials: true //允许跨域带Cookie
+            },
+            success: function () {
+                window.location.href = "http://localhost:8086/toTrade"
+            }
+        })
+    }
 
 </script>
 </body>

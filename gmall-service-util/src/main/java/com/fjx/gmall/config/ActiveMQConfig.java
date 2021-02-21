@@ -20,7 +20,7 @@ public class ActiveMQConfig {
     String listenerEnable;
 
     @Bean
-    public ActiveMQUtil getActiveMQUtil() throws JMSException {
+    public ActiveMQUtil getActiveMQUtil() {
         if (brokerURL.equals("disabled")) {
             return null;
         }
@@ -52,9 +52,6 @@ public class ActiveMQConfig {
 
     @Bean
     public ActiveMQConnectionFactory activeMQConnectionFactory() {
-/*        if((url==null||url.equals(""))&&!brokerURL.equals("disabled")){
-            url=brokerURL;
-        }*/
         ActiveMQConnectionFactory activeMQConnectionFactory =
                 new ActiveMQConnectionFactory(brokerURL);
         return activeMQConnectionFactory;

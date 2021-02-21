@@ -44,8 +44,8 @@ public class PaymentController {
         Map<String, Object> data = new HashMap();
         data.put("out_trade_no", outTradeNo);
         data.put("product_code", "FAST_INSTANT_TRADE_PAY");
-        data.put("total_amount", 12);
-        data.put("subject", "冯金星造瞎起哄电脑");
+        data.put("total_amount", totalAmount);
+        data.put("subject", "金星商城商品");
         String param = JSON.toJSONString(data);
         AlipayTradePagePayRequest alipayRequest = new AlipayTradePagePayRequest();
         //同步回调地址
@@ -62,12 +62,11 @@ public class PaymentController {
             paymentInfo.setOrderSn(outTradeNo);
             paymentInfo.setPaymentStatus("未支付");
             paymentInfo.setSubject("金星商城商品");
+            paymentInfo.setConfirmTime(new Date());
             paymentInfo.setTotalAmount(totalAmount);
             paymentService.savePaymentInfo(paymentInfo);
-
             // 向消息中间件发送一个检查支付状态(支付服务消费)的延迟消息队列
-            paymentService.sendDelayPaymentResultCheckQueue(outTradeNo,5);
-
+            paymentService.sendDelayPaymentResultCheckQueue(outTradeNo, 5);
         } catch (AlipayApiException e) {
             e.printStackTrace();
         }
@@ -87,10 +86,8 @@ public class PaymentController {
         String subject = request.getParameter("subject");
         String merchant_order_no = request.getParameter("merchant_order_no");
         String call_back_content = request.getQueryString();
-
-
         // 通过支付宝的paramsMap进行签名验证，2.0版本的接口将paramsMap参数去掉了，导致同步请求没法验签
-        if(StringUtils.isNotBlank(sign)){
+        if (StringUtils.isNotBlank(sign)) {
             // 验签成功
             PaymentInfo paymentInfo = new PaymentInfo();
             paymentInfo.setOrderSn(out_trade_no);
@@ -100,14 +97,9 @@ public class PaymentController {
             paymentInfo.setCallbackTime(new Date());
             // 更新用户的支付状态
             paymentService.updatePayment(paymentInfo);
-            //支付成功后，引起的系统服务-》订单服务更新-》库存服务-》物流
         }
-
-
-        return "finish";
-
+        return "redirect:http://localhost:8086/list";
     }
-
 
     @RequestMapping("index")
     @LoginRequired(loginSuccess = true)

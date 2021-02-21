@@ -8,8 +8,8 @@
         VALUES( #{id},#{productId},#{productSkuId},#{memberId},#{quantity},#{price},#{sp1},#{sp2},#{sp3},#{productPic},#{productName},#{productSubTitle},#{productSkuCode},#{memberNickname},#{createDate},#{modifyDate},#{productCategoryId},#{productBrand},#{productSn},#{productAttr} )
     </insert>
 
-    <select id="cartExistByUser" resultType="com.fjx.gmall.bean.OmsCartItem">
-        SELECT id,product_id,product_sku_id,member_id,price,sp1,sp2,sp3,product_pic,product_name,product_sub_title,product_sku_code,member_nickname,create_date,modify_date,product_category_id,product_brand,product_sn,product_attr
+    <select id="findCarItemByUser" resultType="com.fjx.gmall.bean.OmsCartItem">
+        SELECT id,product_id,product_sku_id,member_id,price,sp1,sp2,sp3,product_pic,quantity,product_name,product_sub_title,product_sku_code,member_nickname,create_date,modify_date,product_category_id,product_brand,product_sn,product_attr
         FROM oms_cart_item WHERE
         product_sku_id = #{skuId} AND member_id = #{memberId}
     </select>

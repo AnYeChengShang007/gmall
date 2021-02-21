@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class HttpclientUtil {
+public class HttpClientUtil {
 
     public static String doGet(String url)   {
         // 创建Httpclient对象

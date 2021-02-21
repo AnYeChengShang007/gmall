@@ -552,9 +552,9 @@ html,body{
   border-radius: 5px;
   display: none;
   z-index:50000;
-  position: fixed;
-  top:200px;
-  left:500px;
+  position: absolute;
+  top:300px;
+  left:700px;
 }
 .One_isDel>p,.One_moveGzIfNull>p,.One_moveMyGz>p,.One_clearShop>p{
   height:40px;

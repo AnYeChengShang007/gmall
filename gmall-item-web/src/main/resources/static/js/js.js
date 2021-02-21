@@ -74,24 +74,6 @@ $(function(){
 			$(this).addClass("redborder").siblings("dd").removeClass("redborder");
             switchSkuId();
 		})
-		//加减
-		$("#jia").click(function() {
-			var n = $(this).parent().parent().prev("input").val()
-			var num = parseInt(n) + 1
-			if(num == 0) {
-				return;
-			}
-			$(this).parent().parent().prev("input").val(num)
-		})
-
-		$("#jian").click(function() {
-			var n = $(this).parent().parent().prev("input").val()
-			var num = parseInt(n) - 1
-			if(num == 0) {
-				return;
-			}
-			$(this).parent().parent().prev("input").val(num)
-		})
 
 		//左右滚动
 		$("#left").click(function() {
@@ -310,11 +292,13 @@ $(".header_ul_right>.daohang").mouseover(function(){
 	$(this).children(".daohang_ol").hide();
 })
 
+/*
 $('.nav_top_three').mouseover(function(){
 	$('.gouwuchexiaguo').css('display','block')
 }).mouseout(function(){
 	$('.gouwuchexiaguo').css('display','none')
 })
+*/
 
  $('.aaa').on('click',function(){
             $('html,body').animate({//$('html,body')兼容问题body属于chrome

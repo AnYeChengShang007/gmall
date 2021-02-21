@@ -12,9 +12,6 @@ $(function(){
                     var ctg2list= ctgall[ctg1Id];
                     $.each(ctg2list,function (i,ctg2) {
                         var cata2link=$("<a href='#' style= 'color: #111;' class='aaa'>"+ctg2.name+"  ></a>");
-
-
-                        console.log(cata2link.html());
                         var li=$("<li></li>");
                         var  ctg3List=ctg2["catalog3List"];
                         var len=0;
@@ -29,14 +26,11 @@ $(function(){
                             li.attr("style","height: 90px;");
                         }
                         panelol.append(cata2link).append(li);
-
                     });
-
                 });
                 panel.append(panelol);
                 $(this).after(panel);
                 $(this).parent().addClass("header_li2");
-                console.log($(".header_main_left").html());
             }
         });
     });

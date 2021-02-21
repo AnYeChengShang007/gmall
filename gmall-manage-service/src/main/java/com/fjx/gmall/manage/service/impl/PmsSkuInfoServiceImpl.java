@@ -11,13 +11,20 @@ import com.fjx.gmall.manage.mapper.PmsSkuImageMapper;
 import com.fjx.gmall.manage.mapper.PmsSkuInfoMapper;
 import com.fjx.gmall.manage.mapper.PmsSkuSaleAttrValueMapper;
 import com.fjx.gmall.service.PmsSkuInfoService;
+import com.fjx.gmall.util.ActiveMQUtil;
 import com.fjx.gmall.util.RedisUtil;
+import org.apache.activemq.command.ActiveMQMapMessage;
 import org.apache.commons.lang3.StringUtils;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import redis.clients.jedis.Jedis;
 
+import javax.jms.Connection;
+import javax.jms.JMSException;
+import javax.jms.MessageProducer;
+import javax.jms.Queue;
+import javax.jms.Session;
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -27,6 +34,9 @@ public class PmsSkuInfoServiceImpl implements PmsSkuInfoService {
 
     @Autowired
     PmsSkuInfoMapper pmsSkuInfoMapper;
+
+    @Autowired
+    ActiveMQUtil activeMQUtil;
 
     @Autowired
     PmsSkuAttrValueMapper pmsSkuAttrValueMapper;
@@ -68,9 +78,48 @@ public class PmsSkuInfoServiceImpl implements PmsSkuInfoService {
             pmsSkuImage.setSkuId(skuId);
             pmsSkuImageMapper.insertSelective(pmsSkuImage);
         }
-
         //发布消息更新缓存同步
         //发布搜索引擎同步消息
+        Connection connection = null;
+        Session session = null;
+        try {
+            connection = activeMQUtil.getConnectionFactory().createConnection();
+            session = connection.createSession(true, Session.SESSION_TRANSACTED);
+        } catch (JMSException e1) {
+            e1.printStackTrace();
+        }
+        try {
+            //调用mq发送支付成功的消息
+            Queue payment_success_queuqe= session.createQueue("SKU_ADD_QUEUQE");
+            MessageProducer producer = session.createProducer(payment_success_queuqe);
+            ActiveMQMapMessage message = new ActiveMQMapMessage();
+            message.setString("sku_id", skuId);
+            producer.send(message);
+            session.commit();
+        }catch (Exception e){
+            //消息回滚
+            if(session!=null){
+                try {
+                    session.rollback();
+                } catch (JMSException e1) {
+                    e1.printStackTrace();
+                }
+            }
+        }finally {
+            try {
+                if(session!=null)
+                    session.close();
+            } catch (JMSException e1) {
+                e1.printStackTrace();
+            }
+            try {
+                if(connection!=null)
+                    connection.close();
+            } catch (JMSException e1) {
+                e1.printStackTrace();
+            }
+
+        }
     }
 
     public PmsSkuInfo getSkuFromDB(String skuId) {

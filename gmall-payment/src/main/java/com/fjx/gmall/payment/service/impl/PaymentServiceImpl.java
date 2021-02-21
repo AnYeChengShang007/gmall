@@ -46,7 +46,7 @@ public class PaymentServiceImpl implements PaymentService {
         queryForPaymentInfo.setOrderSn(paymentInfo.getOrderSn());
         PaymentInfo checkResult = paymentInfoMaper.selectOne(queryForPaymentInfo);
         String paymentStatus = checkResult.getPaymentStatus();
-        if(StringUtils.isNotBlank(paymentStatus) && paymentStatus.equals("已支付")){
+        if (StringUtils.isNotBlank(paymentStatus) && paymentStatus.equals("已支付")) {
             return;
         }
 
@@ -66,34 +66,34 @@ public class PaymentServiceImpl implements PaymentService {
             e1.printStackTrace();
         }
 
-        //支付成功后引发的系统服务-》订单服务的更新-》库存服务-》物流服务
+        //支付成功后-》订单服务的更新-》库存服务-》物流服务
         try {
             paymentInfoMaper.updateByExampleSelective(paymentInfo, example);
             //调用mq发送支付成功的消息
-            Queue payment_success_queuqe= session.createQueue("PAYMENT_SUCCESS_QUEUQE");
+            Queue payment_success_queuqe = session.createQueue("PAYMENT_SUCCESS_QUEUQE");
             MessageProducer producer = session.createProducer(payment_success_queuqe);
             ActiveMQMapMessage message = new ActiveMQMapMessage();
             message.setString("out_trade_no", paymentInfo.getOrderSn());
             producer.send(message);
             session.commit();
-        }catch (Exception e){
+        } catch (Exception e) {
             //消息回滚
-            if(session!=null){
+            if (session != null) {
                 try {
                     session.rollback();
                 } catch (JMSException e1) {
                     e1.printStackTrace();
                 }
             }
-        }finally {
+        } finally {
             try {
-                if(session!=null)
+                if (session != null)
                     session.close();
             } catch (JMSException e1) {
                 e1.printStackTrace();
             }
             try {
-                if(connection!=null)
+                if (connection != null)
                     connection.close();
             } catch (JMSException e1) {
                 e1.printStackTrace();
@@ -113,31 +113,23 @@ public class PaymentServiceImpl implements PaymentService {
         } catch (Exception e1) {
             e1.printStackTrace();
         }
-
-        try{
+        try {
             Queue payment_success_queue = session.createQueue("PAYMENT_CHECK_QUEUE");
             MessageProducer producer = session.createProducer(payment_success_queue);
-
-            //TextMessage textMessage=new ActiveMQTextMessage();//字符串文本
-
             MapMessage mapMessage = new ActiveMQMapMessage();// hash结构
-
-            mapMessage.setString("out_trade_no",outTradeNo);
-
+            mapMessage.setString("out_trade_no", outTradeNo);
             // 为消息加入延迟时间--参数1 延迟方式
-            mapMessage.setLongProperty(ScheduledMessage.AMQ_SCHEDULED_DELAY,1000*60);
-
+            mapMessage.setLongProperty(ScheduledMessage.AMQ_SCHEDULED_DELAY, 1000 * 60);
             producer.send(mapMessage);
-
             session.commit();
-        }catch (Exception ex){
+        } catch (Exception ex) {
             // 消息回滚
             try {
                 session.rollback();
             } catch (JMSException e1) {
                 e1.printStackTrace();
             }
-        }finally {
+        } finally {
             try {
                 connection.close();
             } catch (JMSException e1) {
@@ -149,8 +141,8 @@ public class PaymentServiceImpl implements PaymentService {
     @Override
     public Map<String, Object> checkAlipayPayment(String out_trade_no) {
         AlipayTradeQueryRequest request = new AlipayTradeQueryRequest();
-        Map<String,Object> queryMap = new HashMap<>();
-        Map<String,Object> resultMap = null;
+        Map<String, Object> queryMap = new HashMap<>();
+        Map<String, Object> resultMap = null;
         queryMap.put("out_trade_no", out_trade_no);
         request.setBizContent(JSON.toJSONString(queryMap));
         AlipayTradeQueryResponse response = null;
@@ -159,15 +151,14 @@ public class PaymentServiceImpl implements PaymentService {
         } catch (AlipayApiException e) {
             e.printStackTrace();
         }
-        if(response!=null ){
-            if(response.isSuccess()){
+        if (response != null) {
+            if (response.isSuccess()) {
                 resultMap = new HashMap<>();
                 resultMap.put("out_trade_no", response.getOutTradeNo());
                 resultMap.put("trade_no", response.getTradeNo());
                 resultMap.put("trade_status", response.getTradeStatus());
                 resultMap.put("call_back_content", response.getMsg());
-            }else {
-
+            } else {
             }
         }
         return resultMap;

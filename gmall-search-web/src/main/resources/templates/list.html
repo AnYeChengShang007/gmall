@@ -16,7 +16,7 @@
     <div class="header_head_box">
         <b class="header_head_p">
             <div style="overflow: hidden">
-                <a href="#" class="header_head_p_a1">
+                <a href="http://localhost:8083/index.html" class="header_head_p_a1">
                     首页
                 </a>
             </div>
@@ -24,30 +24,38 @@
         </b>
         <ul>
             <li>
-                <a href="#" class="li_2">你好，请登录</a>
+                <a th:if="${#httpServletRequest.getAttribute('nickName')==null}"
+                   href="http://localhost:8085?returnUrl=http://localhost:8083/list.html">你好，请登录</a>
+                <a th:if="${#httpServletRequest.getAttribute('nickName')!=null}" href="javascript:;"
+                   th:text="${'你好，'+#httpServletRequest.getAttribute('nickName')}">你好，xxx</a>
+                <a style="cursor: pointer" th:if="${#httpServletRequest.getAttribute('nickName')!=null}"
+                   onclick="logOut()">登出</a>
             </li>
-
+            <li th:if="${#httpServletRequest.getAttribute('nickName')==null}">
+                <a href="/注册页面\index.html" class="li_2">免费注册</a>
+            </li>
+            <span th:if="${#httpServletRequest.getAttribute('nickName')!=null}">|</span>
+            <li th:if="${#httpServletRequest.getAttribute('nickName')!=null}">
+                <a href="http://localhost:8086/list">我的订单</a>
+            </li>
         </ul>
     </div>
 </div>
 
 <!--搜索导航-->
 <div class="header_sous">
-    <div class="logo">
-        <a href="#"><img src="list/image/at.jpg" alt="" width="180px" height="70px"></a>
-    </div>
+    <!-- <div class="logo">
+         <a href="#"><img src="list/image/at.jpg" alt="" width="180px" height="70px"></a>
+     </div>-->
     <div class="header_form">
         <input id="keyword" name="keyword" type="text" placeholder="手机"/>
         <a href="#" onclick="searchList()">搜索</a>
     </div>
     <div class="header_ico">
         <div class="header_gw">
-            <span><a href="#">我的购物车</a></span>
+            <span><a href="http://localhost:8084/cartList">我的购物车</a></span>
             <img src="list/image/settleup-@1x.png"/>
-            <span>0</span>
-        </div>
-        <div class="header_ko">
-            <p>购物车中还没有商品，赶紧选购吧！</p>
+            <span th:text="${cartItemQuantity}">0</span>
         </div>
     </div>
 
@@ -71,10 +79,10 @@
         </div>
         <i><img src="list/image/right-@1x.png" alt=""></i>
         <span th:if="${keyword}!=null" th:text="'&quot;'+${keyword}+'&quot;'">&quot;小米&quot;</span>
-        </span><a style="color: red" class="select-attr" th:each="baseAttrValueSelected:${attrValueSelectedList}"
-           th:href="'list.html?'+${baseAttrValueSelected.urlParam}"
-           th:utext=" ${baseAttrValueSelected.valueName} +'<b> ✖ </b>'"> 2G<b> ✖ </b>
-        </a>
+        </span><a style="color: #ff0000" class="select-attr" th:each="baseAttrValueSelected:${attrValueSelectedList}"
+                  th:href="'list.html?'+${baseAttrValueSelected.urlParam}"
+                  th:utext=" ${baseAttrValueSelected.valueName} +'<b> ✖ </b>'"> 2G<b> ✖ </b>
+    </a>
         <!-- <a class="select-attr"   href="#"      > 屏幕尺寸:5.1-5.5英寸<b> ✖ </b>
         </a>-->
 
@@ -99,15 +107,13 @@
                     <div class="sl_value">
                         <ul>
                             <li th:each="attrValue:${attrInfo.attrValueList}"><a
-                                    th:href="'/list.html?'+${urlParam}+'&valueId='+${attrValue.id}"
+                                    th:href="'/list.html?'+${urlParam==''?'':urlParam+'&'}+'valueId='+${attrValue.id}"
                                     th:text="${attrValue.valueName}">属性值</a></li>
                         </ul>
                     </div>
                 </div>
             </div>
         </div>
-
-
         <!--排序-->
         <div class="GM_banner_main">
             <!--商品精选  广告-->
@@ -189,17 +195,6 @@
             <!--综合排序-->
             <div class="GM_con_right">
                 <div class="filter">
-                    <!--综合排序-->
-                    <div class="filter_top">
-                        <div class="filter_top_left">
-                            <a href="#">综合排序</a>
-                            <a href="#">销量</a>
-                            <a href="#">价格</a>
-                            <a href="#">评论分</a>
-                            <a href="#">上架时间</a>
-                        </div>
-                    </div>
-
                     <!--排序内容-->
                     <div class="rig_tab" style="width:940px">
                         <div style="width:215px" th:each="skuLsInfo:${skuLsInfoList}">
@@ -221,26 +216,30 @@
                             </a>
                         </div>
                     </div>
-
-
                     <!--分页-->
                     <div class="filter_page">
                         <div class="page_wrap">
                             <span class="page_span1">
-                                <a href="#">
+                                <a th:href="@{${pageInfo.currentPage==0?'javascript:;':upperUrl}}"
+                                   th:class="${pageInfo.currentPage==0?'icon_click':''}">
                                     < 上一页
                                 </a>
-                                <a href="#" style="border: 0;color:#ee2222;background: #fff">1</a>
-                                <a href="#">2</a>
+                                <!--                                th:href="@{${num == pageInfo.currentPage?'':'s'}}"-->
+                                <a th:each="num:${pageInfo.pages}" th:text="${num+1}"
+                                   th:style="${num == pageInfo.currentPage?'border: 0;color:#ee2222;background: #fff':''}"
+                                   th:href="@{${queryString==null?preStr+num:requestUrl+'?'+preStr+num+postStr}}"></a>
+                                <!-- <a href="#" style="border: 0;color:#ee2222;background: #fff">1</a>
+                               <a href="#">2</a>
                                 <a href="#">3</a>
                                 <a href="#" style="border: 0;font-size: 20px;color: #999;background: #fff">...</a>
-                                <a href="#">169</a>
-                                <a href="#">
+                                <a href="#">169</a>-->
+                                <a th:href="@{${pageInfo.currentPage==pageInfo.lastPage?'javascript:;':downUrl}}"
+                                   th:class="${pageInfo.currentPage==pageInfo.lastPage?'icon_click':''}">
                                     下一页 >
                                 </a>
                             </span>
                             <span class="page_span2">
-                                <em>共<b>169</b>页&nbsp;&nbsp;到第</em>
+                                <em>共<b th:text="${pageInfo.totalPage}">169</b>页&nbsp;&nbsp;到第</em>
                                 <input type="number" value="1">
                                 <em>页</em>
                                 <a href="#">确定</a>
@@ -358,14 +357,19 @@
         $(this).css({display: "none"})
     });
     //显示隐藏
-    var $li = $(".GM_nav_logo>div:gt(3)").show();
+    var $li = $(".GM_nav_logo>div:gt(3)").hide();
+    if ($li.children().length != 0) {
+        $(".GM_selector").append('<div class="GM_show">\n' +
+            '                <span style="cursor: pointer">展开↓</span>\n' +
+            '            </div>')
+    }
     $('.GM_show span').click(function () {
         if ($li.is(':hidden')) {
             $li.show();
-            $(this).css({width: "86px"}).text('收起 ^');
+            $(this).css({width: "86px", cursor: "pointer"}).text('收起↑');
         } else {
             $li.hide();
-            $('.GM_show span').css({width: "291px"}).text('更多选项（ CPU核数、网络、机身颜色 等）');
+            $('.GM_show span').css({width: "291px", cursor: "pointer"}).text('展开↓');
         }
         return false;
     });
@@ -446,6 +450,18 @@
     }, function () {
         $(this).css("color", "#727272")
     })
+
+    function logOut() {
+        $.ajax({
+            url: "http://localhost:8085/logout",
+            xhrFields: {
+                withCredentials: true //允许跨域带Cookie
+            },
+            success: function () {
+                window.location.href = "http://localhost:8083/list.html"
+            }
+        })
+    }
 </script>
 </body>
 </html>

@@ -11,5 +11,4 @@ public class GmalCartServiceApplication {
     public static void main(String[] args) {
         SpringApplication.run(GmalCartServiceApplication.class, args);
     }
-
 }

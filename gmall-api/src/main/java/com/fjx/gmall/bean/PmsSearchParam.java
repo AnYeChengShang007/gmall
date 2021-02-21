@@ -8,11 +8,21 @@ public class PmsSearchParam implements Serializable {
     //关键字
     private String keyword;
     //三级分类id
-    private  String catalog3Id;
+    private String catalog3Id;
     //sku属性值集合
     private List<PmsSkuAttrValue> skuAttrValueList;
     //前端传过来的属性值id集合
     private String[] valueId;
+
+    private Integer page;
+
+    public Integer getPage() {
+        return page;
+    }
+
+    public void setPage(Integer page) {
+        this.page = page;
+    }
 
     public String getKeyword() {
         return keyword;

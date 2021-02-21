@@ -13,7 +13,7 @@ public class PaymentInfo {
 
     @Column
     @Id
-    private String  id;
+    private String id;
 
     @Column
     private String orderSn;
@@ -32,6 +32,9 @@ public class PaymentInfo {
 
     @Column
     private String paymentStatus;
+
+    @Column
+    private Date confirmTime;
 
     @Column
     private Date createTime;
@@ -120,5 +123,13 @@ public class PaymentInfo {
 
     public void setCallbackContent(String callbackContent) {
         this.callbackContent = callbackContent;
+    }
+
+    public Date getConfirmTime() {
+        return confirmTime;
+    }
+
+    public void setConfirmTime(Date confirmTime) {
+        this.confirmTime = confirmTime;
     }
 }

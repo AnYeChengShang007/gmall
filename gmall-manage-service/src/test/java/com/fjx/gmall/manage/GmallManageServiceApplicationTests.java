@@ -7,7 +7,6 @@ import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.test.context.junit4.SpringRunner;
 import redis.clients.jedis.Jedis;
 
@@ -21,9 +20,6 @@ public class GmallManageServiceApplicationTests {
     @Autowired
     RedissonClient redissonClient;
 
-    @Autowired
-    StringRedisTemplate redisTemplate;
-
     @Test
     public void contextLoads() {
         Jedis jedis = redisUtil.getJedis();
@@ -31,11 +27,6 @@ public class GmallManageServiceApplicationTests {
         jedis.close();
     }
 
-    @Test
-    public void contextLoads2() {
-        String a = redisTemplate.opsForValue().get("a");
-        System.out.println(a);
-    }
 
     @Test
     public void contextLoads3() {

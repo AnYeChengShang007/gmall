@@ -8,6 +8,7 @@ import com.fjx.gmall.service.UserService;
 import com.fjx.gmall.user.mapper.UmsMemberReceiveAddressMapper;
 import com.fjx.gmall.user.mapper.UserMapper;
 import com.fjx.gmall.util.RedisUtil;
+import org.apache.commons.lang3.StringUtils;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,45 +50,46 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UmsMember login(UmsMember umsMember) {
+    /*    1、redis连接不上
+          2、redis中没有用户信息
+          3、用户不存在、查询数据库要使用分布式锁
+    */
         Jedis jedis = null;
         try {
             jedis = redisUtil.getJedis();
             if (jedis != null) {
-                String userStr = jedis.get("user:" + umsMember.getUsername()+umsMember.getPassword() + ":password");
-                UmsMember memberCheck = JSON.parseObject(userStr, UmsMember.class);
-                String password = null;
-                if (memberCheck != null) {
+                String userStr = jedis.get("user:" + umsMember.getUsername() + umsMember.getPassword() + ":password");
+                if (StringUtils.isNotBlank(userStr)) {
+                    UmsMember memberCheck = JSON.parseObject(userStr, UmsMember.class);
+                    String password = null;
                     password = memberCheck.getPassword();
+                    if (password != null && password.equals(umsMember.getPassword())) {
+                        //密码正确
+                        return memberCheck;
+                    }
                 }
 
-                if (password != null && password.equals(umsMember.getPassword())) {
-                    //密码正确
-                    return memberCheck;
-                }
 
             }
-
-           /* 1、redis连接不上
-            2、redis查不到缓存
-            3、用户不存在
-            查询数据库要使用分布式锁
-            */
-            RLock lock = redissonClient.getLock("UmsMemberLock");
-
-            lock.lock();
+            //redis连接失败
+            RLock lock = null;
             try {
+                lock = redissonClient.getLock("UmsMemberLock");
+                lock.lock();
                 UmsMember memberInDB = loginFromDB(umsMember);
                 if (memberInDB != null) {
-                    jedis.setex("user:" + umsMember.getUsername()+umsMember.getPassword() + ":password",
+                    jedis.setex("user:" + umsMember.getUsername() + umsMember.getPassword() + ":password",
                             60 * 60 * 24,
                             JSON.toJSONString(memberInDB));
                     return memberInDB;
                 }
+            } catch (Exception e) {
+                e.printStackTrace();
             } finally {
-                lock.unlock();
+                if (lock != null) {
+                    lock.unlock();
+                }
             }
-
-
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -100,9 +102,17 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void addUserToken(String token, String memberId) {
-        Jedis jedis = redisUtil.getJedis();
-        jedis.setex("user:" + memberId + ":token", 60 * 60 * 24, token);
-        jedis.close();
+        Jedis jedis = null;
+        jedis = redisUtil.getJedis();
+        try {
+            jedis.setex("user:" + memberId + ":token", 60 * 60 * 24, token);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (jedis != null) {
+                jedis.close();
+            }
+        }
     }
 
     @Override
