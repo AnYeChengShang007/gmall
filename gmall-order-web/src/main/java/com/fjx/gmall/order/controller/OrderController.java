@@ -169,12 +169,8 @@ public class OrderController {
         Object mId = request.getAttribute("memberId");
         Object name = request.getAttribute("nickName");
         String memberId = null;
-        String nickName = null;
         if (mId != null) {
             memberId = (String) mId;
-        }
-        if (name != null) {
-            nickName = (String) name;
         }
         //获取购物车物品集合
         List<OmsCartItem> cartItems = cartService.cartList(memberId);
